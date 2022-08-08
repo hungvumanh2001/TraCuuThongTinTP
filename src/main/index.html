@@ -10,33 +10,33 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="container" id="main">
-        <div class="row mt-3">
-            <div class="col-9">
-                <h3 class="pl-3">Danh sách thành phố</h3>
-            </div>
-            <div class="col-3">
-                <button class="btn btn-secondary" onclick="showAddForm()">Thêm thành phố</button>
-            </div>
+<div class="container" id="main">
+    <div class="row mt-3">
+        <div class="col-9">
+            <h3 class="pl-3">Danh sách thành phố</h3>
         </div>
-        <div class="row">
-            <div class="col-12 mt-3 p-3">
-                <table class="table">
-                    <thead class="table-secondary">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Thành phố</th>
-                        <th scope="col">Quốc Gia</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody id="tbody">
-
-                    </tbody>
-                </table>
-            </div>
+        <div class="col-3">
+            <button class="btn btn-secondary" onclick="showAddForm()">Thêm thành phố</button>
         </div>
     </div>
+    <div class="row">
+        <div class="col-12 mt-3 p-3">
+            <table class="table">
+                <thead class="table-secondary">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Thành phố</th>
+                    <th scope="col">Quốc Gia</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 <script>
     loadData();
 
@@ -49,30 +49,32 @@
             }
         })
     }
-    function loadCities(list){
+
+    function loadCities(list) {
         let str = "";
-        for (let i = 0; i<list.length; i++){
-            str +=`<tr>
-                        <th scope="row">${i+1}</th>
+        for (let i = 0; i < list.length; i++) {
+            str += `<tr>
+                        <th scope="row">${i + 1}</th>
                         <td><a class="btn" onclick="detail(${list[i].id})">${list[i].name}</a></td>
                         <td>${list[i].country.name}</td>
                         <td>
                             <a class="btn" onclick="showEditForm(${list[i].id})">Chỉnh sửa</a>
                             |
-                            <a class="btn">Xóa</a>
+                            <a class="btn" onclick="showDelete(${list[i].id})">Xóa</a>
                         </td>
                     </tr>`
         }
         document.getElementById('tbody').innerHTML = str;
         console.log(list)
     }
-    function detail(id){
+
+    function detail(id) {
         let str = "";
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/cities/"+id,
+            url: "http://localhost:8080/cities/" + id,
             success: function (data) {
-                str +=`<div class="container">
+                str += `<div class="container">
                             <div class="row mt-3">
                                 <div class="col-9">
                                     <h3 class="pl-3">Danh sách thành phố</h3>
@@ -95,7 +97,7 @@
                                 <div class="col-6"></div>
                                 <div class="col-6">
                                     <button class="btn-light mr-3" onclick="showEditForm(${data.id})">Chỉnh sửa</button>
-                                    <button class="btn-light">Xóa</button>
+                                    <button class="btn-light" onclick="showDelete(${data.id})">Xóa</button>
                                 </div>
                             </div>
                         </div>`
@@ -104,7 +106,8 @@
             }
         })
     }
-    function home(){
+
+    function home() {
         let str = `<div class="row mt-3">
             <div class="col-9">
                 <h3 class="pl-3">Danh sách thành phố</h3>
@@ -133,7 +136,8 @@
         document.getElementById('main').innerHTML = str;
         loadData();
     }
-    function showAddForm(){
+
+    function showAddForm() {
         let str = `<div class="row">
                         <div class="col-4"></div>
                         <div class="col-4 mt-3 p-3">
@@ -161,20 +165,22 @@
         loadCountries();
         document.getElementById('main').innerHTML = str;
     }
-    function loadCountries(){
+
+    function loadCountries() {
         let str = "";
         $.ajax({
             type: "GET",
             url: "http://localhost:8080/countries",
             success: function (list) {
-                for (let i=0; i<list.length; i++){
+                for (let i = 0; i < list.length; i++) {
                     str += `<option value="${list[i].id}">${list[i].name}</option>`;
                 }
                 document.getElementById('countries').innerHTML = str;
             }
         })
     }
-    function save(){
+
+    function save() {
         let formData = new FormData(document.getElementById('addForm'));
         let city = {
             name: formData.get('name'),
@@ -187,23 +193,23 @@
             description: formData.get('description')
         }
         $.ajax({
-            headers:{
-                'Accept' : 'application/json',
-                'Content-Type':'application/json',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
             },
-            type:'POST',
-            url:"http://localhost:8080/cities",
+            type: 'POST',
+            url: "http://localhost:8080/cities",
             data: JSON.stringify(city),
-            success: function ()
-            {
+            success: function () {
                 home();
             },
-            error: function (error){
+            error: function (error) {
                 console.log(error);
             }
         })
     }
-    function showEditForm(id){
+
+    function showEditForm(id) {
         let str = `<div class="row">
                         <div class="col-4"></div>
                         <div class="col-4 mt-3 p-3">
@@ -233,7 +239,7 @@
         document.getElementById('main').innerHTML = str;
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/cities/"+id,
+            url: "http://localhost:8080/cities/" + id,
             success: function (data) {
                 document.getElementById('editId').value = data.id;
                 document.getElementById('editName').value = data.name;
@@ -245,7 +251,8 @@
             }
         })
     }
-    function update(){
+
+    function update() {
         let editId = document.getElementById('editId').value;
         let editFormData = new FormData(document.getElementById('editForm'));
         let city = {
@@ -259,18 +266,56 @@
             description: editFormData.get('editDescription')
         }
         $.ajax({
-            headers:{
-                'Accept' : 'application/json',
-                'Content-Type':'application/json',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
             },
-            type:'PUT',
-            url:"http://localhost:8080/cities/"+editId,
+            type: 'PUT',
+            url: "http://localhost:8080/cities/" + editId,
             data: JSON.stringify(city),
-            success: function ()
-            {
+            success: function () {
                 home();
             },
-            error: function (error){
+            error: function (error) {
+                console.log(error);
+            }
+        })
+    }
+
+    function showDelete(id) {
+        let str = "";
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/cities/" + id,
+            success: function (data) {
+                str += `<div class="row">
+                            <div class="col-4"></div>
+                            <div class="col-4">
+                                <h3>Xóa thành phố</h3>
+                                <p>Bạn có chắc chắn muốn xóa thành phố: ${data.name}</p>
+                            </div>
+                            <div class="col-4"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4"></div>
+                            <div class="col-4">
+                                <button class="btn-light mr-3" onclick="remove(${data.id})">Xóa</button>
+                                <button class="btn-light" onclick="home()">Thoát</button>
+                            </div>
+                            <div class="col-4"></div>
+                        </div>`
+                document.getElementById('main').innerHTML = str;
+            }
+        })
+    }
+    function remove(id){
+        $.ajax({
+            type: "DELETE",
+            url: "http://localhost:8080/cities/" + id,
+            success: function () {
+                home();
+            },
+            error: function (error) {
                 console.log(error);
             }
         })
